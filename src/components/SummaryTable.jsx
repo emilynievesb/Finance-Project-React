@@ -41,19 +41,20 @@ export default function SummaryTable({ data }) {
             <table className="divide-y divide-gray-200 border border-gray-300 w-[65rem] ">
                 <thead className="bg-indigo-600">
                     <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider ">Tipo</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Monto</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Fecha</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider min-w-xs max-w-sm truncate">Descripción</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%] ">Tipo</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%] ">Monto</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%] ">Fecha</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-xs min-w-xs max-w-sm truncate">
+                            Descripción
+                        </th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                     {currentRows.map((row, index) => (
                         <tr key={index} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">{row.tipo}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">{formatCurrency(row.monto)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500  ">{row.fecha}</td>
-                            {/* Aplicar truncate y fijar el ancho de la columna */}
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]">{row.tipo}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%] ">{formatCurrency(row.monto)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]  ">{row.fecha}</td>
                             <td className="px-6 py-4 text-sm text-gray-500 min-w-xs max-w-xs truncate" title={row.descripcion}>
                                 {row.descripcion}
                             </td>
