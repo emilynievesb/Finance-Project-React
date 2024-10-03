@@ -8,11 +8,15 @@ function App() {
     const [userID, setUserID] = useState('');
     const [userName, setUserName] = useState('');
     const [userIsLogged, setUserIsLogged] = useState(false);
+
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<LoginPage setUserIsLogged={setUserIsLogged} setUserName={setUserName} setUserID={setUserID} />} />
-                <Route path="/dashboard/" element={userIsLogged ? <Dashboard userID={userID} userName={userName} /> : <NotFound />} />
+                <Route
+                    path="/dashboard/"
+                    element={userIsLogged ? <Dashboard userID={userID} userName={userName} setUserIsLogged={setUserIsLogged} /> : <NotFound />}
+                />
             </Routes>
         </Router>
     );
