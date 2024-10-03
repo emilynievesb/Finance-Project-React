@@ -37,7 +37,7 @@ export default function SummaryTable({ data }) {
 
     return (
         <div className=" flex flex-col items-center p-10 ">
-            <h2>Aquí tienes tu resumen de movimientos</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-10">Aquí tienes tu resumen de movimientos</h2>
             <table className="divide-y divide-gray-200 border border-gray-300 w-[65rem] ">
                 <thead className="bg-indigo-600">
                     <tr>
