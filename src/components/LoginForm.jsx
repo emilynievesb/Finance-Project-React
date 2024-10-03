@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logo from '../assets/LogoFinanzas.png';
 import { useHandleSubmitLogin } from '../shared/hooks/useHandleSubmitLogin';
 
-export default function LoginForm() {
+export default function LoginForm({ setUserName, setUserIsLogged, setUserID }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const { handleSubmit, isSubmitting, error } = useHandleSubmitLogin();
@@ -15,7 +15,12 @@ export default function LoginForm() {
                 </div>
 
                 <div className=" sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form action="#" method="POST" className="space-y-6" onSubmit={(e) => handleSubmit(e, username, password)}>
+                    <form
+                        action="#"
+                        method="POST"
+                        className="space-y-6"
+                        onSubmit={(e) => handleSubmit(e, username, password, setUserIsLogged, setUserID, setUserName)}
+                    >
                         <div className="text-left">
                             <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
                                 Username

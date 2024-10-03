@@ -7,7 +7,7 @@ export const useHandleSubmitLogin = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const handleSubmit = (e, username, password) => {
+    const handleSubmit = (e, username, password, setUserIsLogged, setUserID, setUserName) => {
         e.preventDefault();
         setError(null);
 
@@ -21,6 +21,9 @@ export const useHandleSubmitLogin = () => {
         setTimeout(() => {
             setIsSubmitting(false);
             if (username === 'emily' && password === 'emily') {
+                setUserIsLogged(true);
+                setUserID('123');
+                setUserName('Emily Nieves');
                 navigate('/dashboard');
             } else {
                 setError('Credenciales incorrectas');

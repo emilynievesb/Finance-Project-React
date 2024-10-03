@@ -5,7 +5,7 @@ import { FaSearchDollar } from 'react-icons/fa';
 import { FiHome } from 'react-icons/fi';
 import { BiBookBookmark } from 'react-icons/bi';
 
-export default function SideBar({ activeSection, setActiveSection }) {
+export default function SideBar({ userName, activeSection, setActiveSection }) {
     return (
         <div className="flex min-h-screen">
             <div className="w-64 bg-gray-900 text-white flex flex-col">
@@ -46,7 +46,7 @@ export default function SideBar({ activeSection, setActiveSection }) {
                     <div className="flex items-center">
                         <img className="inline-block h-10 w-10 rounded-full" src={AvatarDefault} alt="User" />
                         <div className="ml-3">
-                            <p className="text-sm font-medium text-white">Tom Cook</p>
+                            <p className="text-sm font-medium text-white">{userName}</p>
                             {/* <p className="text-xs font-medium text-gray-400">View profile</p> */}
                         </div>
                     </div>
