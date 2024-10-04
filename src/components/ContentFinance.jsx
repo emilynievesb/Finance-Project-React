@@ -23,11 +23,11 @@ const records = [
     { tipo: 'Egreso', monto: 4000, fecha: '2024-01-12', descripcion: 'Regalos' },
 ];
 
-export default function ContentFinance({ activeSection }) {
+export default function ContentFinance({ activeSection, userID }) {
     return (
         <div className="flex-1">
             {activeSection === 0 && <h1 className="text-3xl">Bienvenido al Dashboard</h1>}
-            {activeSection === 1 && <AddRecordForm />}
+            {activeSection === 1 && <AddRecordForm userID={userID} />}
             {activeSection === 2 && <SummaryTable data={records} />}
         </div>
     );

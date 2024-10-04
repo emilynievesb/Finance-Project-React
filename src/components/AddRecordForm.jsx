@@ -2,17 +2,31 @@ import React, { useState } from 'react';
 import SelectMenu from './SelectMenu';
 import { useHandleDateChange, useHandleDescriptionChange, useHandleInputAmountChange, useHandleSubmit } from '../shared/hooks/useHandleSubmitRecord';
 
-export default function AddRecordForm() {
-    const [selectedType, setSelectedType] = useState('-');
-    const { amount, formatCurrency, handleInputAmountChange } = useHandleInputAmountChange();
-    const { selectedDate, handleDateChange } = useHandleDateChange();
-    const { description, handleDescription } = useHandleDescriptionChange();
-    const { handleSubmit, error } = useHandleSubmit();
+export default function AddRecordForm({ userID }) {
+    const [selectedType, setSelectedType] = useState(0);
+    const { amount, setAmount, formatCurrency, handleInputAmountChange } = useHandleInputAmountChange();
+    const { selectedDate, setSelectedDate, handleDateChange } = useHandleDateChange();
+    const { description, setDescription, handleDescription } = useHandleDescriptionChange();
+    const { handleSubmit, error, success, isSubmitting } = useHandleSubmit();
+
+    // Función para resetear el formulario
+    const resetForm = () => {
+        setSelectedType(0); // Resetea el tipo de transacción
+        setAmount(''); // Resetea el monto
+        setSelectedDate(''); // Resetea la fecha
+        setDescription(''); // Resetea la descripción
+    };
+
+    const amountInputClass =
+        selectedType === 2 // 2 representa "Egreso"
+            ? 'w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-red-500 sm:text-sm transition-all duration-150'
+            : 'w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 sm:text-sm transition-all duration-150';
+
     return (
         <form
             method="POST"
             className="w-[100%] h-screen flex flex-col justify-center items-center sm:p-4 p-4"
-            onSubmit={(e) => handleSubmit(e, selectedType, amount, selectedDate, description)}
+            onSubmit={(e) => handleSubmit(e, userID, selectedType, amount, selectedDate, description, resetForm)}
         >
             <div className="w-full max-w-3xl space-y-12 border-b border-gray-900/10 pb-12">
                 <h2 className="text-base font-semibold leading-7 text-gray-900">Agrega un Ingreso o Egreso</h2>
@@ -36,7 +50,6 @@ export default function AddRecordForm() {
                                 ]}
                             />
                         </div>
-                        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
                     </div>
 
                     {/* Monto */}
@@ -52,7 +65,7 @@ export default function AddRecordForm() {
                             value={formatCurrency(amount)}
                             onChange={handleInputAmountChange}
                             autoComplete="off"
-                            className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 sm:text-sm transition-all duration-150"
+                            className={amountInputClass}
                         />
                     </div>
 
@@ -94,22 +107,26 @@ export default function AddRecordForm() {
                     <p className="mt-3 text-sm leading-6 text-gray-600">
                         Puedes escribir todo lo que se te ocurra, esto en un futuro te ayudará a recordar el por qué de este movimiento.
                     </p>
-                    {/* Boton de envío */}
-                    <div className="mt-6 flex justify-center">
-                        <button
-                            type="submit"
-                            className="flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
-                        >
-                            Enviar
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="white" viewBox="0 0 20 20" stroke="none">
-                                <path
-                                    fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414L9.414 14l-4.707-4.707a1 1 0 011.414-1.414L9.414 11.586l6.293-6.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd"
-                                />
-                            </svg>
-                        </button>
-                    </div>
+                </div>
+
+                {/* Error después de la descripción y antes del botón */}
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+                {success && <p className="text-green-500 text-sm mt-2">{success}</p>}
+                {/* Botón de envío */}
+                <div className="mt-6 flex justify-center">
+                    <button
+                        type="submit"
+                        className="flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+                    >
+                        {isSubmitting ? 'Enviando...' : 'Enviar'}
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="white" viewBox="0 0 20 20" stroke="none">
+                            <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414L9.414 14l-4.707-4.707a1 1 0 011.414-1.414L9.414 11.586l6.293-6.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </form>
