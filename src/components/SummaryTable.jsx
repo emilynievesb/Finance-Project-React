@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useHandleTransactionsPagination } from '../shared/hooks/useHandleTransactionsPagination'; // Importamos el hook
 
 // Función para formatear números como moneda colombiana
 const formatCurrency = (value) => {
@@ -9,32 +10,20 @@ const formatCurrency = (value) => {
     }).format(value);
 };
 
+// Función para formatear la fecha en DD/MM/YYYY
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses van de 0-11, por eso sumamos 1
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`; // Formato DD/MM/YYYY
+};
+
 // Componente de Tabla con paginación
-export default function SummaryTable({ data }) {
-    const [currentPage, setCurrentPage] = useState(1); // Estado para la página actual
-    const rowsPerPage = 10; // Fijar 10 filas por página
-
-    // Calcular los índices para la paginación
-    const indexOfLastRow = currentPage * rowsPerPage;
-    const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    const currentRows = data.slice(indexOfFirstRow, indexOfLastRow); // Obtener las filas actuales
-
-    // Calcular el número total de páginas
-    const totalPages = Math.ceil(data.length / rowsPerPage);
-
-    // Funciones para cambiar de página
-    const nextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const prevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
-
+export default function SummaryTable({ userID }) {
+    const { transactions, loading, error, currentPage, totalPages, nextPage, prevPage } = useHandleTransactionsPagination(userID);
+    if (loading) return <p className="text-2xl font-bold tracking-tight text-gray-900 mb-10 text-center pt-10">Cargando transacciones...</p>;
+    if (error) return <p className="text-2xl font-bold tracking-tight text-red-900 mb-10 text-center pt-10">{error}</p>;
     return (
         <div className=" flex flex-col items-center p-10 ">
             <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-10">Aquí tienes tu resumen de movimientos</h2>
@@ -50,11 +39,14 @@ export default function SummaryTable({ data }) {
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {currentRows.map((row, index) => (
+                    {transactions.map((row, index) => (
                         <tr key={index} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]">{row.tipo}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%] ">{formatCurrency(row.monto)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]  ">{row.fecha}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]">{row.tipo_id === 1 ? 'Ingreso' : 'Egreso'}</td>
+                            <td className={`px-6 py-4 whitespace-nowrap text-sm w-[15%] ${row.tipo_id === 2 ? 'text-red-500' : 'text-green-500'}`}>
+                                {/* Si es egreso, muestra el monto con el signo negativo */}
+                                {row.tipo_id === 2 ? `- ${formatCurrency(row.monto)}` : `+ ${formatCurrency(row.monto)}`}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]  ">{formatDate(row.fecha)}</td>
                             <td className="px-6 py-4 text-sm text-gray-500 min-w-xs max-w-xs truncate" title={row.descripcion}>
                                 {row.descripcion}
                             </td>
