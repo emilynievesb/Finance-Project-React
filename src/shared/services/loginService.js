@@ -10,11 +10,8 @@ export async function login(username, password) {
             body: JSON.stringify({ username, password }),
             credentials: 'include', // Importante: Esto envía y permite recibir cookies
         });
-        console.log('response');
 
-        console.log(response);
         const data = await response.json();
-        console.log(data);
 
         if (!response.ok) {
             throw new Error(data.message || 'Error en el inicio de sesión');
