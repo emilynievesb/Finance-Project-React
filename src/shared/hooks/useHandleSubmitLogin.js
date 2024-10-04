@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../services/loginService';
 
 // Este hook maneja la lógica de envío de formulario de inicio de sesión
 export const useHandleSubmitLogin = () => {
@@ -19,21 +20,9 @@ export const useHandleSubmitLogin = () => {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch('http://localhost:3000/api/usuarios/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include', // Esto permite enviar/recibir cookies en la petición
-                body: JSON.stringify({
-                    username: username,
-                    password: password,
-                }),
-            });
+            const data = await login(username, password);
 
-            const data = await response.json();
-
-            if (response.ok) {
+            if (data) {
                 setUserIsLogged(true);
                 // Suponiendo que el backend ya haya configurado la cookie del JWT
                 setTimeout(() => {
@@ -48,7 +37,8 @@ export const useHandleSubmitLogin = () => {
             }
         } catch (error) {
             setIsSubmitting(false);
-            setError('Error de red o servidor: ' + error);
+            console.log(error);
+            setError(error.message);
         }
     };
 
