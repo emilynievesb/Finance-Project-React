@@ -7,7 +7,7 @@ export const useHandleSubmitLogin = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const handleSubmit = (e, username, password, setUserIsLogged, setUserID, setUserName) => {
+    const handleSubmit = async (e, username, password, setUserIsLogged, setUserID, setUserName) => {
         e.preventDefault();
         setError(null);
 
@@ -18,17 +18,38 @@ export const useHandleSubmitLogin = () => {
 
         setIsSubmitting(true);
 
-        setTimeout(() => {
-            setIsSubmitting(false);
-            if (username === 'emily' && password === 'emily') {
+        try {
+            const response = await fetch('http://localhost:3000/api/usuarios/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include', // Esto permite enviar/recibir cookies en la petición
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
                 setUserIsLogged(true);
-                setUserID('123');
-                setUserName('Emily Nieves');
-                navigate('/dashboard');
+                // Suponiendo que el backend ya haya configurado la cookie del JWT
+                setTimeout(() => {
+                    setIsSubmitting(false);
+                    setUserID(data.userId);
+                    setUserName(data.nombre);
+                    navigate('/dashboard');
+                }, 1000);
             } else {
-                setError('Credenciales incorrectas');
+                setIsSubmitting(false);
+                setError(data.message || 'Error en el inicio de sesión');
             }
-        }, 1000);
+        } catch (error) {
+            setIsSubmitting(false);
+            setError('Error de red o servidor: ' + error);
+        }
     };
 
     return { handleSubmit, isSubmitting, error };
