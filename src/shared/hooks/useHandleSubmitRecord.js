@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createTransaction } from '../services/transactionService';
 
 const useHandleInputAmountChange = () => {
     const [amount, setAmount] = useState('');
@@ -24,7 +25,7 @@ const useHandleInputAmountChange = () => {
         setAmount(value);
     };
 
-    return { amount, formatCurrency, handleInputAmountChange };
+    return { amount, setAmount, formatCurrency, handleInputAmountChange };
 };
 
 const useHandleDateChange = (e) => {
@@ -33,7 +34,7 @@ const useHandleDateChange = (e) => {
     const handleDateChange = (e) => {
         setSelectedDate(e.target.value); // Actualizar el estado con la fecha seleccionada
     };
-    return { selectedDate, handleDateChange };
+    return { selectedDate, setSelectedDate, handleDateChange };
 };
 
 const useHandleDescriptionChange = (e) => {
@@ -42,24 +43,58 @@ const useHandleDescriptionChange = (e) => {
     const handleDescription = (e) => {
         setDescription(e.target.value);
     };
-    return { description, handleDescription };
+    return { description, setDescription, handleDescription };
 };
 
 const useHandleSubmit = () => {
     const [error, setError] = useState(''); // Estado para manejar el error
+    const [success, setSuccess] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false); // Estado para manejar el proceso de envío
 
-    const handleSubmit = (e, selectedType, amount, selectedDate, description) => {
+    const handleSubmit = async (e, userID, selectedType, amount, selectedDate, description, resetForm) => {
         e.preventDefault();
         setError(null);
 
-        if (!selectedType || selectedType == '-') {
+        // Validaciones básicas
+        if (!selectedType || selectedType === '-') {
             setError('Por favor, selecciona un tipo de registro.');
             return;
         }
-        console.log({ selectedType, amount, selectedDate, description });
+        if (!amount || amount <= 0) {
+            setError('Por favor, ingresa un monto válido.');
+            return;
+        }
+
+        // Preparar el objeto de datos a enviar
+        const transactionData = {
+            usuario_id: userID,
+            tipo_id: selectedType, // Asumimos que `selectedType` es el ID del tipo de transacción
+            monto: amount,
+            fecha: selectedDate, // Puede estar en formato ISO 8601 o el formato que maneje el backend
+            descripcion: description,
+        };
+
+        setIsSubmitting(true); // Indicar que la solicitud está en proceso
+
+        try {
+            await createTransaction(transactionData);
+            setTimeout(() => {
+                resetForm();
+                setIsSubmitting(false);
+                setError(null);
+                setSuccess('Transacción completada exitosamente');
+                setTimeout(() => {
+                    resetForm();
+                    setSuccess('');
+                }, 1000);
+            }, 1000);
+        } catch (error) {
+            setIsSubmitting(false);
+            setError('Error al registrar la transacción: ' + error.message);
+        }
     };
 
-    return { handleSubmit, error };
+    return { handleSubmit, error, success, isSubmitting };
 };
 
 export { useHandleInputAmountChange, useHandleDateChange, useHandleDescriptionChange, useHandleSubmit };
