@@ -20,7 +20,7 @@ export default function AddRecordForm({ userID }) {
     const amountInputClass =
         selectedType === 2 // 2 representa "Egreso"
             ? 'w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 text-red-500 sm:text-sm transition-all duration-150'
-            : 'w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 sm:text-sm transition-all duration-150';
+            : 'w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-green-500 sm:text-sm transition-all duration-150';
 
     return (
         <form
@@ -65,7 +65,11 @@ export default function AddRecordForm({ userID }) {
                             value={formatCurrency(amount)}
                             onChange={handleInputAmountChange}
                             autoComplete="off"
-                            className={amountInputClass}
+                            className={
+                                selectedType !== 0
+                                    ? amountInputClass
+                                    : "'w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-grey-900 sm:text-sm transition-all duration-150"
+                            }
                         />
                     </div>
 
