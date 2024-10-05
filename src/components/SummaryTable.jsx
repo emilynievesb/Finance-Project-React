@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHandleTransactionsPagination } from '../shared/hooks/useHandleTransactionsPagination'; // Importamos el hook
+import { FaTrashAlt } from 'react-icons/fa'; // Icono de basura con FontAwesome (puedes usar cualquier icono que prefieras)
 
 // Función para formatear números como moneda colombiana
 const formatCurrency = (value) => {
@@ -22,33 +23,47 @@ const formatDate = (dateString) => {
 // Componente de Tabla con paginación
 export default function SummaryTable({ userID }) {
     const { transactions, loading, error, currentPage, totalPages, nextPage, prevPage } = useHandleTransactionsPagination(userID);
+
+    const handleDelete = (id) => {
+        console.log(`Eliminar transacción con ID: ${id}`);
+    };
+
     if (loading) return <p className="text-2xl font-bold tracking-tight text-gray-900 mb-10 text-center pt-10">Cargando transacciones...</p>;
     if (error) return <p className="text-2xl font-bold tracking-tight text-red-900 mb-10 text-center pt-10">{error}</p>;
+
     return (
-        <div className=" flex flex-col items-center p-10 ">
+        <div className="flex flex-col items-center p-10">
             <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-10">Aquí tienes tu resumen de movimientos</h2>
-            <table className="divide-y divide-gray-200 border border-gray-300 w-[65rem] ">
+            <table className="divide-y divide-gray-200 border border-gray-300 w-[65rem]">
                 <thead className="bg-indigo-600">
                     <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%] ">Tipo</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%] ">Monto</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%] ">Fecha</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%]">Tipo</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%]">Monto</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%]">Fecha</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%]">Categoría</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-xs min-w-xs max-w-sm truncate">
                             Descripción
                         </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[10%]">Acciones</th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                     {transactions.map((row, index) => (
-                        <tr key={index} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]">{row.tipo_id === 1 ? 'Ingreso' : 'Egreso'}</td>
+                        <tr key={row.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]">{row.tipo}</td>
                             <td className={`px-6 py-4 whitespace-nowrap text-sm w-[15%] ${row.tipo_id === 2 ? 'text-red-500' : 'text-green-500'}`}>
                                 {/* Si es egreso, muestra el monto con el signo negativo */}
                                 {row.tipo_id === 2 ? `- ${formatCurrency(row.monto)}` : `+ ${formatCurrency(row.monto)}`}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]  ">{formatDate(row.fecha)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]">{formatDate(row.fecha)}</td>
+                            <td className="px-6 py-4 text-sm text-gray-500 tracking-wider w-[15%]">{row.categoria}</td>
                             <td className="px-6 py-4 text-sm text-gray-500 min-w-xs max-w-xs truncate" title={row.descripcion}>
                                 {row.descripcion}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                <button className="text-red-600 hover:text-red-800" onClick={() => handleDelete(row.id)} title="Eliminar">
+                                    <FaTrashAlt />
+                                </button>
                             </td>
                         </tr>
                     ))}

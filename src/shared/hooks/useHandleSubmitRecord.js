@@ -51,7 +51,7 @@ const useHandleSubmit = () => {
     const [success, setSuccess] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false); // Estado para manejar el proceso de envío
 
-    const handleSubmit = async (e, userID, selectedType, amount, selectedDate, description, resetForm) => {
+    const handleSubmit = async (e, userID, selectedType, selectedCategory, amount, selectedDate, description, resetForm) => {
         e.preventDefault();
         setError(null);
 
@@ -70,10 +70,11 @@ const useHandleSubmit = () => {
             usuario_id: userID,
             tipo_id: selectedType, // Asumimos que `selectedType` es el ID del tipo de transacción
             monto: amount,
+            categoria_id: selectedCategory,
             fecha: selectedDate, // Puede estar en formato ISO 8601 o el formato que maneje el backend
             descripcion: description,
         };
-
+        console.log(transactionData);
         setIsSubmitting(true); // Indicar que la solicitud está en proceso
 
         try {
