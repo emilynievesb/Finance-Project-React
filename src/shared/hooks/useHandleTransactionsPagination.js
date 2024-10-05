@@ -56,5 +56,6 @@ export const useHandleTransactionsPagination = (userID, rowsPerPage = 10) => {
         totalPages,
         nextPage,
         prevPage,
+        loadTransactions,
     };
 };

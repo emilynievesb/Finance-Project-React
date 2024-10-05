@@ -1,6 +1,9 @@
-import React from 'react';
-import { useHandleTransactionsPagination } from '../shared/hooks/useHandleTransactionsPagination'; // Importamos el hook
-import { FaTrashAlt } from 'react-icons/fa'; // Icono de basura con FontAwesome (puedes usar cualquier icono que prefieras)
+import React, { useState } from 'react';
+import { useHandleTransactionsPagination } from '../shared/hooks/useHandleTransactionsPagination'; // Hook para paginación
+import { FaTrashAlt } from 'react-icons/fa'; // Icono de basura
+import { useDeleteTransaction } from '../shared/hooks/useHandleDeleteTransaction'; // Hook para eliminar
+import { useModal } from '../shared/hooks/useModal'; // Hook para manejar la modal
+import ConfirmationModal from './ConfirmationModal'; // Importamos la modal de confirmación
 
 // Función para formatear números como moneda colombiana
 const formatCurrency = (value) => {
@@ -15,17 +18,27 @@ const formatCurrency = (value) => {
 const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses van de 0-11, por eso sumamos 1
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses van de 0-11
     const year = date.getFullYear();
     return `${day}/${month}/${year}`; // Formato DD/MM/YYYY
 };
 
 // Componente de Tabla con paginación
 export default function SummaryTable({ userID }) {
-    const { transactions, loading, error, currentPage, totalPages, nextPage, prevPage } = useHandleTransactionsPagination(userID);
+    const { transactions, loading, error, currentPage, totalPages, nextPage, prevPage, loadTransactions } = useHandleTransactionsPagination(userID); // Incluimos loadTransactions para recargar la tabla
+    const { deleteTransaction, loading: deleting, error: deleteError, success: deleteSuccess } = useDeleteTransaction(); // Hook para eliminar
+    const { isOpen, openModal, closeModal } = useModal(); // Hook para manejar la modal
+    const [transactionIdToDelete, setTransactionIdToDelete] = useState(null); // Estado para guardar la transacción seleccionada
 
-    const handleDelete = (id) => {
-        console.log(`Eliminar transacción con ID: ${id}`);
+    const handleDeleteClick = (id) => {
+        setTransactionIdToDelete(id); // Guardamos el ID de la transacción a eliminar
+        openModal(); // Abrimos la modal
+    };
+
+    const handleConfirmDelete = async () => {
+        await deleteTransaction(transactionIdToDelete); // Llamamos al hook para eliminar la transacción
+        await loadTransactions(currentPage); // Recargamos las transacciones para refrescar la tabla
+        closeModal(); // Cerramos la modal
     };
 
     if (loading) return <p className="text-2xl font-bold tracking-tight text-gray-900 mb-10 text-center pt-10">Cargando transacciones...</p>;
@@ -34,6 +47,11 @@ export default function SummaryTable({ userID }) {
     return (
         <div className="flex flex-col items-center p-10">
             <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-10">Aquí tienes tu resumen de movimientos</h2>
+
+            {/* Mensajes de éxito y error */}
+            {deleteError && <p className="text-red-500">{deleteError}</p>}
+            {deleteSuccess && <p className="text-green-500">{deleteSuccess}</p>}
+
             <table className="divide-y divide-gray-200 border border-gray-300 w-[65rem]">
                 <thead className="bg-indigo-600">
                     <tr>
@@ -52,7 +70,6 @@ export default function SummaryTable({ userID }) {
                         <tr key={row.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]">{row.tipo}</td>
                             <td className={`px-6 py-4 whitespace-nowrap text-sm w-[15%] ${row.tipo_id === 2 ? 'text-red-500' : 'text-green-500'}`}>
-                                {/* Si es egreso, muestra el monto con el signo negativo */}
                                 {row.tipo_id === 2 ? `- ${formatCurrency(row.monto)}` : `+ ${formatCurrency(row.monto)}`}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]">{formatDate(row.fecha)}</td>
@@ -61,7 +78,7 @@ export default function SummaryTable({ userID }) {
                                 {row.descripcion}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                <button className="text-red-600 hover:text-red-800" onClick={() => handleDelete(row.id)} title="Eliminar">
+                                <button className="text-red-600 hover:text-red-800" onClick={() => handleDeleteClick(row.id)} title="Eliminar">
                                     <FaTrashAlt />
                                 </button>
                             </td>
@@ -94,6 +111,11 @@ export default function SummaryTable({ userID }) {
                     Siguiente
                 </button>
             </div>
+
+            {/* Modal de confirmación */}
+            <ConfirmationModal isOpen={isOpen} onClose={closeModal} onConfirm={handleConfirmDelete} />
+
+            {deleting && <p>Eliminando transacción...</p>}
         </div>
     );
 }

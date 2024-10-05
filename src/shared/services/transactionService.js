@@ -66,3 +66,25 @@ export const getTransactionsWithPagination = async (userID, page = 1, limit = 10
         throw new Error(error.message || 'Error de red o servidor');
     }
 };
+
+// Servicio para eliminar una transacción por su ID
+export const deleteTransactionById = async (transactionId) => {
+    try {
+        const response = await fetch(`${apiUrl}/transacciones/${transactionId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include', // Si estás utilizando cookies o autenticación por tokens
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || 'Error al eliminar la transacción');
+        }
+
+        return true; // Si la eliminación es exitosa
+    } catch (error) {
+        throw new Error(error.message || 'Error de red o servidor');
+    }
+};
