@@ -4,17 +4,10 @@ import AvatarDefault from '../assets/AvatarDefault.avif';
 import { FaSearchDollar } from 'react-icons/fa';
 import { FiHome, FiLogOut } from 'react-icons/fi';
 import { BiBookBookmark } from 'react-icons/bi';
-import { useNavigate } from 'react-router-dom';
+import { useHandleLogout } from '../shared/hooks/useHandleLogout'; // Importamos el hook de logout
 
 export default function SideBar({ userName, activeSection, setActiveSection, setUserIsLogged }) {
-    const navigate = useNavigate();
-
-    const handleLogout = (setUserIsLogged) => {
-        setTimeout(() => {
-            setUserIsLogged(false);
-            navigate('/');
-        }, 1000);
-    };
+    const { handleLogout, isLoggingOut, error } = useHandleLogout(); // Usamos el hook
 
     return (
         <div className="flex min-h-screen">
@@ -60,10 +53,15 @@ export default function SideBar({ userName, activeSection, setActiveSection, set
                                 <p className="text-sm font-medium text-white">{userName}</p>
                             </div>
                         </div>
-                        <button onClick={() => handleLogout(setUserIsLogged)} className="text-gray-400 hover:text-white transition-colors duration-300">
-                            <FiLogOut className="h-6 w-6" />
+                        <button
+                            onClick={() => handleLogout(setUserIsLogged)}
+                            disabled={isLoggingOut}
+                            className="text-gray-400 hover:text-white transition-colors duration-300"
+                        >
+                            {isLoggingOut ? 'Saliendo...' : <FiLogOut className="h-6 w-6" />}
                         </button>
                     </div>
+                    {error && <p className="text-red-500 mt-2">{error}</p>} {/* Mostrar el error si ocurre */}
                 </div>
             </div>
         </div>
