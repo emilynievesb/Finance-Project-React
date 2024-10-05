@@ -13,7 +13,6 @@ export const signupUser = async (formData) => {
 
         if (!response.ok) {
             const data = await response.json();
-            console.log(data);
             throw new Error(data.message || 'Error al registrar el usuario');
         }
 
