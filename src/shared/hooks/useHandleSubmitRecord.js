@@ -74,7 +74,6 @@ const useHandleSubmit = () => {
             fecha: selectedDate, // Puede estar en formato ISO 8601 o el formato que maneje el backend
             descripcion: description,
         };
-        console.log(transactionData);
         setIsSubmitting(true); // Indicar que la solicitud está en proceso
 
         try {

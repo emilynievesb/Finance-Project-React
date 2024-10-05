@@ -22,11 +22,11 @@ export const useFetchChartData = (userID) => {
             try {
                 // 1. Obtener ingresos vs egresos por mes
                 const incomeExpense = await fetchIncomeVsExpensesByMonth(userID);
-                console.log(incomeExpense);
                 setIncomeExpenseData(incomeExpense);
 
                 // 2. Obtener distribución de gastos por categoría
                 const expensesByCategory = await fetchExpensesDistributionByCategory(userID);
+
                 setExpenseByCategoryData(expensesByCategory);
 
                 // 3. Obtener evolución del saldo mensual
@@ -35,6 +35,7 @@ export const useFetchChartData = (userID) => {
 
                 // 4. Obtener el top 5 de categorías con más gastos
                 const topCategories = await fetchTop5CategoriesByExpenses(userID);
+
                 setTopCategoriesData(topCategories);
             } catch (err) {
                 setError(err.message);

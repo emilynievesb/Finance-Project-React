@@ -14,7 +14,6 @@ export const useHandleViewTransactionsUser = (userID) => {
         try {
             // Usamos el servicio para obtener las transacciones desde el backend
             const fetchedData = await getTransactionsByUserId(userID);
-            console.log(fetchedData);
             setTransactions(fetchedData); // Guardamos las transacciones en el estado
         } catch (err) {
             setError('Error al cargar las transacciones: ' + err.message); // Manejamos errores

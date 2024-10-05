@@ -16,7 +16,6 @@ export const useHandleTransactionsPagination = (userID, rowsPerPage = 10) => {
 
         try {
             const data = await getTransactionsWithPagination(userID, page, rowsPerPage); // Llamamos al servicio
-            console.log(data);
             setTimeout(() => {
                 setTransactions(data.transactions); // Actualizamos el estado con las transacciones
                 setTotalPages(data.totalPages); // Actualizamos el total de páginas
