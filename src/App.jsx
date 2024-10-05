@@ -18,7 +18,7 @@ function App() {
                     path="/dashboard/"
                     element={userIsLogged ? <Dashboard userID={userID} userName={userName} setUserIsLogged={setUserIsLogged} /> : <NotFound />}
                 />
-                <Route path="/signin/" element={<SignupForm />} />
+                <Route path="/signup/" element={<SignupForm />} />
             </Routes>
         </Router>
     );

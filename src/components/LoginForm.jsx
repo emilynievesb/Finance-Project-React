@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
 import logo from '../assets/LogoFinanzas.png';
 import { useHandleSubmitLogin } from '../shared/hooks/useHandleSubmitLogin';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginForm({ setUserName, setUserIsLogged, setUserID }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const { handleSubmit, isSubmitting, error } = useHandleSubmitLogin();
+
+    const navigate = useNavigate();
+
+    // Función para manejar el clic en el enlace de registrarse
+    const handleRegisterClick = (e) => {
+        e.preventDefault();
+        navigate('/signup');
+    };
+
     return (
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -69,7 +79,11 @@ export default function LoginForm({ setUserName, setUserIsLogged, setUserID }) {
 
                     <p className="mt-10 text-center text-sm text-gray-500">
                         No tienes una cuenta?{' '}
-                        <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                        <a
+                            href="#"
+                            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+                            onClick={handleRegisterClick} // Redirigir al hacer clic en "Registrarse"
+                        >
                             Registrate
                         </a>
                     </p>
