@@ -4,6 +4,7 @@ import { useHandleDateChange, useHandleDescriptionChange, useHandleInputAmountCh
 
 export default function AddRecordForm({ userID }) {
     const [selectedType, setSelectedType] = useState(0);
+    const [selectedCategory, setSelectedCategory] = useState(0);
     const { amount, setAmount, formatCurrency, handleInputAmountChange } = useHandleInputAmountChange();
     const { selectedDate, setSelectedDate, handleDateChange } = useHandleDateChange();
     const { description, setDescription, handleDescription } = useHandleDescriptionChange();
@@ -13,6 +14,7 @@ export default function AddRecordForm({ userID }) {
     const resetForm = () => {
         setSelectedType(0); // Resetea el tipo de transacción
         setAmount(''); // Resetea el monto
+        setSelectedCategory(0);
         setSelectedDate(''); // Resetea la fecha
         setDescription(''); // Resetea la descripción
     };
@@ -26,7 +28,7 @@ export default function AddRecordForm({ userID }) {
         <form
             method="POST"
             className="w-[100%] h-screen flex flex-col justify-center items-center sm:p-4 p-4"
-            onSubmit={(e) => handleSubmit(e, userID, selectedType, amount, selectedDate, description, resetForm)}
+            onSubmit={(e) => handleSubmit(e, userID, selectedType, selectedCategory, amount, selectedDate, description, resetForm)}
         >
             <div className="w-full max-w-3xl space-y-12 border-b border-gray-900/10 pb-12">
                 <h2 className="text-base font-semibold leading-7 text-gray-900">Agrega un Ingreso o Egreso</h2>
@@ -34,13 +36,15 @@ export default function AddRecordForm({ userID }) {
                     Por favor, diligencia atentamente cada uno de los espacios asignados para poder procesar correctamente tu información y guardarlo de manera
                     eficiente en nuestra base de datos!
                 </p>
-                <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-8">
+
+                {/* Configuración de Grid con 4 columnas */}
+                <div className="mt-10 grid grid-cols-1 sm:grid-cols-4 gap-x-6 gap-y-8">
                     {/* Tipo de Registro */}
                     <div className="sm:col-span-1">
                         <label htmlFor="type" className="block text-sm font-medium leading-6 text-gray-900">
                             Tipo de Registro
                         </label>
-                        <div>
+                        <div className="w-full pt-0.5">
                             <SelectMenu
                                 selected={selectedType}
                                 setSelected={setSelectedType}
@@ -65,12 +69,33 @@ export default function AddRecordForm({ userID }) {
                             value={formatCurrency(amount)}
                             onChange={handleInputAmountChange}
                             autoComplete="off"
-                            className={
-                                selectedType !== 0
-                                    ? amountInputClass
-                                    : "'w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-grey-900 sm:text-sm transition-all duration-150"
-                            }
+                            className={selectedType !== 0 ? amountInputClass : 'w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm'}
                         />
+                    </div>
+
+                    {/* Categoría */}
+                    <div className="sm:col-span-1">
+                        <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+                            Categoría
+                        </label>
+                        <div className="w-full pt-1.5">
+                            <SelectMenu
+                                selected={selectedCategory}
+                                setSelected={setSelectedCategory}
+                                items={[
+                                    { key: 1, label: 'Educación' },
+                                    { key: 2, label: 'Entretenimiento' },
+                                    { key: 3, label: 'Comida' },
+                                    { key: 4, label: 'Trabajo' },
+                                    { key: 5, label: 'Regalos' },
+                                    { key: 6, label: 'Gimnasio' },
+                                    { key: 7, label: 'Ropa' },
+                                    { key: 8, label: 'Servicios' },
+                                    { key: 9, label: 'Ahorros' },
+                                    { key: 10, label: 'Otro' },
+                                ]}
+                            />
+                        </div>
                     </div>
 
                     {/* Fecha */}
@@ -116,6 +141,7 @@ export default function AddRecordForm({ userID }) {
                 {/* Error después de la descripción y antes del botón */}
                 {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                 {success && <p className="text-green-500 text-sm mt-2">{success}</p>}
+
                 {/* Botón de envío */}
                 <div className="mt-6 flex justify-center">
                     <button
