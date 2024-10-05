@@ -3,6 +3,7 @@ import Dashboard from './pages/Dashboard';
 import LoginPage from './pages/LoginPage';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NotFound from './pages/NotFound';
+import SignupForm from './pages/SignupForm';
 
 function App() {
     const [userID, setUserID] = useState('');
@@ -17,6 +18,7 @@ function App() {
                     path="/dashboard/"
                     element={userIsLogged ? <Dashboard userID={userID} userName={userName} setUserIsLogged={setUserIsLogged} /> : <NotFound />}
                 />
+                <Route path="/signin/" element={<SignupForm />} />
             </Routes>
         </Router>
     );
