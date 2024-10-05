@@ -23,12 +23,12 @@ const formatDate = (dateString) => {
     return `${day}/${month}/${year}`; // Formato DD/MM/YYYY
 };
 
-// Componente de Tabla con paginación
+// Componente de Tabla con paginación y animación de fade-in
 export default function SummaryTable({ userID }) {
-    const { transactions, loading, error, currentPage, totalPages, nextPage, prevPage, loadTransactions } = useHandleTransactionsPagination(userID); // Incluimos loadTransactions para recargar la tabla
-    const { deleteTransaction, loading: deleting, error: deleteError, success: deleteSuccess } = useDeleteTransaction(); // Hook para eliminar
-    const { isOpen, openModal, closeModal } = useModal(); // Hook para manejar la modal
-    const [transactionIdToDelete, setTransactionIdToDelete] = useState(null); // Estado para guardar la transacción seleccionada
+    const { transactions, loading, error, currentPage, totalPages, nextPage, prevPage, loadTransactions } = useHandleTransactionsPagination(userID);
+    const { deleteTransaction, loading: deleting, error: deleteError, success: deleteSuccess } = useDeleteTransaction();
+    const { isOpen, openModal, closeModal } = useModal();
+    const [transactionIdToDelete, setTransactionIdToDelete] = useState(null);
 
     const handleDeleteClick = (id) => {
         setTransactionIdToDelete(id); // Guardamos el ID de la transacción a eliminar
@@ -41,6 +41,7 @@ export default function SummaryTable({ userID }) {
         closeModal(); // Cerramos la modal
     };
 
+    // Fade-in de la tabla con opacidad y duración suave al cargar
     if (loading) return <p className="text-2xl font-bold tracking-tight text-gray-900 mb-10 text-center pt-10">Cargando transacciones...</p>;
     if (error) return <p className="text-2xl font-bold tracking-tight text-red-900 mb-10 text-center pt-10">{error}</p>;
 
@@ -52,7 +53,7 @@ export default function SummaryTable({ userID }) {
             {deleteError && <p className="text-red-500">{deleteError}</p>}
             {deleteSuccess && <p className="text-green-500">{deleteSuccess}</p>}
 
-            <table className="divide-y divide-gray-200 border border-gray-300 w-[65rem]">
+            <table className="divide-y divide-gray-200 border border-gray-300 w-[65rem] transition-opacity duration-500 ease-in opacity-100">
                 <thead className="bg-indigo-600">
                     <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-[15%]">Tipo</th>
@@ -67,7 +68,12 @@ export default function SummaryTable({ userID }) {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                     {transactions.map((row, index) => (
-                        <tr key={row.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                        <tr
+                            key={row.id}
+                            className={`${
+                                index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                            } hover:bg-gray-100 transition-shadow duration-300 ease-in-out hover:shadow-md`}
+                        >
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-[15%]">{row.tipo}</td>
                             <td className={`px-6 py-4 whitespace-nowrap text-sm w-[15%] ${row.tipo_id === 2 ? 'text-red-500' : 'text-green-500'}`}>
                                 {row.tipo_id === 2 ? `- ${formatCurrency(row.monto)}` : `+ ${formatCurrency(row.monto)}`}
