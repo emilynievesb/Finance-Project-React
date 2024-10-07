@@ -87,3 +87,25 @@ export const deleteTransactionById = async (transactionId) => {
         throw new Error(error.message || 'Error de red o servidor');
     }
 };
+
+// Servicio para editar una transacción existente
+export const editTransaction = async (transactionID, updatedData) => {
+    try {
+        const response = await fetch(`${apiUrl}/transacciones/${transactionID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedData), // Convertimos los datos a JSON
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al editar la transacción');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error en la petición de edición:', error);
+        throw error;
+    }
+};

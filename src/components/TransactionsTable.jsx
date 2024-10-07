@@ -1,26 +1,25 @@
-// TransactionsTable.js
 import React from 'react';
-import { FaTrashAlt } from 'react-icons/fa'; // Icono de basura
+import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 
-// Función para formatear números como moneda colombiana
-const formatCurrency = (value) => {
-    return new Intl.NumberFormat('es-CO', {
-        style: 'currency',
-        currency: 'COP',
-        minimumFractionDigits: 0,
-    }).format(value);
-};
+export default function TransactionsTable({ transactions, handleDeleteClick, openEditModal }) {
+    // Función para formatear números como moneda colombiana
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0,
+        }).format(value);
+    };
 
-// Función para formatear la fecha en DD/MM/YYYY
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses van de 0-11
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`; // Formato DD/MM/YYYY
-};
+    // Función para formatear la fecha en DD/MM/YYYY
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
 
-export default function TransactionsTable({ transactions, handleDeleteClick }) {
     return (
         <table className="divide-y divide-gray-200 border border-gray-300 w-[65rem] transition-opacity duration-500 ease-in opacity-100">
             <thead className="bg-indigo-600">
@@ -51,6 +50,9 @@ export default function TransactionsTable({ transactions, handleDeleteClick }) {
                             {row.descripcion}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                            <button className="text-blue-600 hover:text-blue-800 mr-4" onClick={() => openEditModal(row)} title="Editar">
+                                <FaEdit />
+                            </button>
                             <button className="text-red-600 hover:text-red-800" onClick={() => handleDeleteClick(row.id)} title="Eliminar">
                                 <FaTrashAlt />
                             </button>
