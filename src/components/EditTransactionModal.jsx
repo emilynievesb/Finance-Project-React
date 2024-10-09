@@ -3,7 +3,10 @@ import SelectMenu from './SelectMenu';
 
 // Función para convertir una fecha en formato ISO a 'yyyy-MM-dd' (formato aceptado por el input de tipo date)
 const formatDateForInput = (dateString) => {
-    return dateString.replace(/-/g, '/');
+    // Dividimos la fecha en "T" para separar la fecha de la hora
+    const [datePart] = dateString.split('T');
+    // Remplazamos los guiones por barras
+    return datePart.replace(/-/g, '/');
 };
 
 export default function EditTransactionModal({ transaction, onClose, onSave }) {

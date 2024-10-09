@@ -13,7 +13,10 @@ export default function TransactionsTable({ transactions, handleDeleteClick, ope
 
     // Función para formatear la fecha en DD/MM/YYYY
     const formatDate = (dateString) => {
-        return dateString.replace(/-/g, '/');
+        // Dividimos la fecha en "T" para separar la fecha de la hora
+        const [datePart] = dateString.split('T');
+        // Remplazamos los guiones por barras
+        return datePart.replace(/-/g, '/');
     };
 
     return (
