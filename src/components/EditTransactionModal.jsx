@@ -6,7 +6,7 @@ const formatDateForInput = (dateString) => {
     // Dividimos la fecha en "T" para separar la fecha de la hora
     const [datePart] = dateString.split('T');
     // Remplazamos los guiones por barras
-    return datePart.replace(/-/g, '/');
+    return datePart;
 };
 
 export default function EditTransactionModal({ transaction, onClose, onSave }) {
