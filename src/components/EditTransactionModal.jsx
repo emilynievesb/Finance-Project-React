@@ -3,11 +3,7 @@ import SelectMenu from './SelectMenu';
 
 // Función para convertir una fecha en formato ISO a 'yyyy-MM-dd' (formato aceptado por el input de tipo date)
 const formatDateForInput = (dateString) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses van de 0 a 11, por eso sumamos 1
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return dateString.replace(/-/g, '/');
 };
 
 export default function EditTransactionModal({ transaction, onClose, onSave }) {
